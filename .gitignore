@@ -1,0 +1,26 @@
+.DS_Store
+.ipynb_checkpoints/
+.idea/
+__pycache__/
+**.pyc
+**.gz
+data/
+download/
+results/
+*.zip
+*.tgz
+.kaggle-cli
+.vscode
+
+data
+data-bin
+trainings
+
+# fairseq repo
+fairseq
+rocks
+scripts
+test
+*.lua
+*.txt
+PATENTS
