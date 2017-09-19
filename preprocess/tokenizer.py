@@ -39,6 +39,7 @@ def tokenize(filepath, lower_case=True, delim=' '):
     tokenized = ''
     f = open(filepath, 'r')
     for line in f:
+        logger.info("     [tokenizer] %s" % line)
         # strip sgm tags if any
         _line = _preprocess_sgm(line, is_sgm)
         _tok = jieba.cut(_line) if is_zh else nltk.word_tokenize(_line)

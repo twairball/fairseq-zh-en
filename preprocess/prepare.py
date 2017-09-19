@@ -31,7 +31,7 @@ heavily borrowed from tensor2tensor's generator_utils.py
 
 dataset_config: {"url": "http://my.dataset.url", "source": "data.en", "target": "data.zh"}
 """
-def prepare_dataset(data_dir, tmp_dir, dataset_config):
+def prepare_dataset(data_dir, tmp_dir, dataset_config, tokenize=True):
     """ download, unzip and copy files to data_dir if necessary """
     
     if not os.path.exists(data_dir):
@@ -74,13 +74,16 @@ def prepare_dataset(data_dir, tmp_dir, dataset_config):
             logger.info("tmp file: %s not found, downloading..." % tmp_filepath)
             download_dataset()
         
-        # tokenize
-        logger.info("tokenizing: %s" % tmp_filepath)
-        tokenized = tokenizer.tokenize(tmp_filepath)
-        logger.info("...done. writing to: %s" % data_filepath)
-        f = open(data_filepath, 'w')
-        f.write(tokenized)
-        f.close()
+        if tokenize:
+            logger.info("tokenizing: %s" % tmp_filepath)
+            tokenized = tokenizer.tokenize(tmp_filepath)
+            logger.info("...done. writing to: %s" % data_filepath)
+            f = open(data_filepath, 'w')
+            f.write(tokenized)
+            f.close()
+        else:
+            logger.info("tokenize=False, copying to %s" % data_filepath)
+            os.rename(tmp_filepath, data_filepath)
 
 def download_report_hook(count, block_size, total_size):
     """Report hook for download progress.
