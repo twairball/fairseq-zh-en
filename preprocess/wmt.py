@@ -33,7 +33,7 @@ WMT17_TEST_ZHEN = {
 }
 
 DATA_DIR  = "data/wmt17_en_zh/"
-TMP_DIR = "./tmp/"
+TMP_DIR = "tmp/wmt17_en_zh/"
 
 if __name__ == '__main__':
     for ds in [WMT17_TRAIN_ZHEN, WMT17_DEV_ZHEN, WMT17_TEST_ZHEN]:
