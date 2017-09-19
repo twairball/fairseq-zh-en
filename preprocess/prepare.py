@@ -22,8 +22,8 @@ import six.moves.urllib_request as urllib  # Imports urllib on Python2, urllib.r
 import tokenizer
 
 import logging
-logger = logging.getLogger(__name__)
-logger.setLevel(logging.DEBUG)
+logger = logging.getLogger()
+logger.setLevel(logging.INFO)
 
 """
 Prepare datasets.

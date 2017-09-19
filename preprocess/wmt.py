@@ -4,7 +4,7 @@ Download and prepare dataset for wmt17 zh-en
 import prepare
 
 import logging
-logger = logging.getLogger(__name__)
+logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
 WMT17_TRAIN_ZHEN = {

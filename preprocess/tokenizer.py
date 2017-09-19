@@ -5,8 +5,8 @@ import jieba
 import nltk
 
 import logging
-logger = logging.getLogger(__name__)
-logger.setLevel(logging.DEBUG)
+logger = logging.getLogger()
+logger.setLevel(logging.INFO)
 
 # init
 jieba.initialize()
