@@ -15,12 +15,4 @@ results/
 data
 data-bin
 trainings
-
-# fairseq repo
-fairseq
-rocks
-scripts
-test
-*.lua
-*.txt
-PATENTS
+tmp

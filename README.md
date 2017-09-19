@@ -50,31 +50,25 @@ $ cd $LD_LIBRARY_PATH;
 $ sudo ln -s  /usr/local/cuda-8.0/extras/CUPTI/lib64/* $LD_LIBRARY_PATH/
 ````
 
-# Data Preprocessing
 
-(Note: parrallel corpus renamed as data.en and data.zh for brevity)
+# Preprocess
+
 ````
-$ TEXT=data/nc-v12
+# download, unzip, tokenize datasets
+# We use dataset_config dictionary -- see wmt.py for more. 
+$ python prepare/wmt.py
 
-# Tokenize Chinese 
-$ python -m jieba $TEXT/data.zh -d" " > $TEXT/data.tok.zh
-
-# Tokenize English
-$ python preprocess/nltk_tokenize.py --input $TEXT/data.en --output $TEXT/data.tok.en
-
-# make train, val, test datasets
-$ python preprocess/make_dataset.py --en $TEXT/data.tok.en --zh $TEXT/data.tok.zh \
-    --output_dir=$TEXT/
-
+$ TEXT=data/wmt17_en_zh
+$ DATADIR=data-bin/wmt17_en_zh
 $ fairseq preprocess -sourcelang en -targetlang zh \
     -trainpref $TEXT/train -validpref $TEXT/valid -testpref $TEXT/test \
-    -thresholdsrc 3 -thresholdtgt 3 -destdir data-bin/nc-v12.en.zh
+    -thresholdsrc 3 -thresholdtgt 3 -destdir $DATADIR
 ````
 
 # Training
 
 ````
-$ DATADIR=data-bin/nc-v12.en.zh
+$ DATADIR=data-bin/wmt17_en_zh
 
 # Standard bi-directional LSTM model
 $ mkdir -p trainings/blstm
@@ -92,41 +86,6 @@ $ fairseq train -sourcelang en -targetlang zh -datadir $DATADIR \
 $ mkdir -p trainings/convenc
 $ fairseq train -sourcelang en -targetlang zh -datadir $DATADIR \
     -model conv -nenclayer 6 -dropout 0.2 -dropout_hid 0 -savedir trainings/convenc
-````
-
-# Results
-
-### Bi-LSTM
-
-````
-| Test with beam=1: BLEU4 = 64.59, 69.1/63.7/63.1/62.7 (BP=1.000, ratio=0.995, sys_len=545557, ref_len=543024)
-| Test with beam=5: BLEU4 = 64.15, 75.0/70.2/69.8/69.6 (BP=0.902, ratio=1.103, sys_len=492180, ref_len=543024)
-| Test with beam=10: BLEU4 = 64.38, 74.8/70.2/69.8/69.5 (BP=0.906, ratio=1.099, sys_len=494193, ref_len=543024)
-| Test with beam=20: BLEU4 = 63.76, 73.8/69.1/68.6/68.3 (BP=0.912, ratio=1.092, sys_len=497325, ref_len=543024)
-````
-
-### fconv
-
-````
-| Test with beam=1: BLEU4 = 63.49, 74.2/67.5/66.3/65.6 (BP=0.929, ratio=1.073, sys_len=505902, r
-ef_len=543024)
-| Test with beam=5: BLEU4 = 62.22, 79.4/73.8/73.0/72.6 (BP=0.834, ratio=1.182, sys_len=459550, r
-ef_len=543024)
-| Test with beam=10: BLEU4 = 62.52, 79.9/74.6/73.9/73.6 (BP=0.828, ratio=1.189, sys_len=456857, 
-ref_len=543024)
-| Test with beam=20: BLEU4 = 62.74, 79.9/74.8/74.1/73.8 (BP=0.830, ratio=1.187, sys_len=457641, 
-ref_len=543024)
-````
-
-### ConvEnc
-words/s: 7835
-epochs: 47
-
-````
-| Test with beam=1: BLEU4 = 50.91, 56.4/49.9/49.1/48.6 (BP=1.000, ratio=0.896, sys_len=606309, ref_len=543024)
-| Test with beam=5: BLEU4 = 56.71, 65.4/59.4/58.9/58.7 (BP=0.937, ratio=1.065, sys_len=509942, ref_len=543024)
-| Test with beam=10: BLEU4 = 56.83, 63.0/57.4/56.9/56.6 (BP=0.973, ratio=1.028, sys_len=528438, ref_len=543024)
-| Test with beam=20: BLEU4 = 53.66, 57.9/52.9/52.3/51.7 (BP=1.000, ratio=0.950, sys_len=571676, ref_len=543024)
 ````
 
 # Generate

@@ -1,7 +1,7 @@
 # Results
 
 
-## nc-v12 zh-en
+## wmt17 en-zh
 
 ### Bi-LSTM
 
