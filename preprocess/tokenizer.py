@@ -34,12 +34,16 @@ def _preprocess_sgm(line, is_sgm):
 def tokenize(filepath, lower_case=True, delim=' '):
     filename = os.path.basename(filepath)
     is_sgm = filename.endswith(".sgm")
-    is_zh = "zh" in filename
+    is_zh = filename.endswith(".zh") or filename.endswith(".zh.sgm")
 
     tokenized = ''
     f = open(filepath, 'r')
-    for line in f:
-        logger.info("     [tokenizer] %s" % line)
+    for i, line in enumerate(f):
+        
+        if i % 100 == 0:
+            _tokenizer_name = "jieba" if is_zh else "nltk.word_tokenize" 
+            logger.info("     [%d] %s: %s" % (i, _tokenizer_name, line))
+
         # strip sgm tags if any
         _line = _preprocess_sgm(line, is_sgm)
         _tok = jieba.cut(_line) if is_zh else nltk.word_tokenize(_line)
