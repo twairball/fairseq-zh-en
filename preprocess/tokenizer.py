@@ -5,8 +5,8 @@ import jieba
 import nltk
 
 import logging
-logger = logging.getLogger()
-logger.setLevel(logging.INFO)
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 # init
 jieba.initialize()
@@ -39,7 +39,6 @@ def tokenize(filepath, lower_case=True, delim=' '):
     tokenized = ''
     f = open(filepath, 'r')
     for line in f:
-        logger.info("[tokenizer] sentence: %s" % line)
         # strip sgm tags if any
         _line = _preprocess_sgm(line, is_sgm)
         _tok = jieba.cut(_line) if is_zh else nltk.word_tokenize(_line)

@@ -4,8 +4,8 @@ Download and prepare dataset for wmt17 zh-en
 import prepare
 
 import logging
-logger = logging.getLogger()
-logger.setLevel(logging.INFO)
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 WMT17_TRAIN_ZHEN = {
     "url": "http://data.statmt.org/wmt17/translation-task/"

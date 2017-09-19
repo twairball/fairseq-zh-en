@@ -22,8 +22,8 @@ import six.moves.urllib_request as urllib  # Imports urllib on Python2, urllib.r
 import tokenizer
 
 import logging
-logger = logging.getLogger()
-logger.setLevel(logging.INFO)
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 """
 Prepare datasets.
@@ -33,7 +33,12 @@ dataset_config: {"url": "http://my.dataset.url", "source": "data.en", "target": 
 """
 def prepare_dataset(data_dir, tmp_dir, dataset_config):
     """ download, unzip and copy files to data_dir if necessary """
-        
+    
+    if not os.path.exists(data_dir):
+        os.makedirs(data_dir)
+    if not os.path.exists(tmp_dir):
+        os.makedirs(tmp_dir)
+
     def download_dataset():
         url = dataset_config["url"]
         filename = os.path.basename(url)
