@@ -56,7 +56,7 @@ $ sudo ln -s  /usr/local/cuda-8.0/extras/CUPTI/lib64/* $LD_LIBRARY_PATH/
 ````
 # download, unzip, tokenize datasets
 # We use dataset_config dictionary -- see wmt.py for more. 
-$ python prepare/wmt.py
+$ python preprocess/wmt.py
 
 $ TEXT=data/wmt17_en_zh
 $ DATADIR=data-bin/wmt17_en_zh
@@ -69,18 +69,19 @@ $ fairseq preprocess -sourcelang en -targetlang zh \
 
 ````
 $ DATADIR=data-bin/wmt17_en_zh
+$ TRAIN=trainings/wmt17_en_zh
 
 # Standard bi-directional LSTM model
-$ mkdir -p trainings/blstm
+$ mkdir -p $TRAIN/blstm
 $ fairseq train -sourcelang en -targetlang zh -datadir $DATADIR \
     -model blstm -nhid 512 -dropout 0.2 -dropout_hid 0 -optim adam -lr 0.0003125 \
-    -savedir trainings/blstm
+    -savedir $TRAIN/blstm
 
 # Fully convolutional sequence-to-sequence model
-$ mkdir -p trainings/fconv
+$ mkdir -p $TRAIN/fconv
 $ fairseq train -sourcelang en -targetlang zh -datadir $DATADIR \
     -model fconv -nenclayer 4 -nlayer 3 -dropout 0.2 -optim nag -lr 0.25 -clip 0.1 \
-    -momentum 0.99 -timeavg -bptt 0 -savedir trainings/fconv
+    -momentum 0.99 -timeavg -bptt 0 -savedir $TRAIN/fconv
 
 # Convolutional encoder, LSTM decoder
 $ mkdir -p trainings/convenc

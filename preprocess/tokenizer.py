@@ -40,15 +40,18 @@ def tokenize(filepath, lower_case=True, delim=' '):
     f = open(filepath, 'r')
     for i, line in enumerate(f):
         
-        if i % 100 == 0:
+        if i % 2000 == 0:
             _tokenizer_name = "jieba" if is_zh else "nltk.word_tokenize" 
             logger.info("     [%d] %s: %s" % (i, _tokenizer_name, line))
 
         # strip sgm tags if any
         _line = _preprocess_sgm(line, is_sgm)
-        _tok = jieba.cut(_line) if is_zh else nltk.word_tokenize(_line)
+        # tokenize
+        _tok = jieba.cut(_line.rstrip('\r\n')) if is_zh else nltk.word_tokenize(_line)
         _tokenized = delim.join(_tok)
+        # lowercase. ignore if chinese. 
         _tokenized = _tokenized.lower() if lower_case and not is_zh else _tokenized
+        # append
         tokenized += _tokenized
         tokenized += "\n"
     f.close()
