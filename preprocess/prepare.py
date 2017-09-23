@@ -76,7 +76,7 @@ def prepare_dataset(data_dir, tmp_dir, dataset_config, tokenize=True):
         
         if tokenize:
             logger.info("tokenizing: %s" % tmp_filepath)
-            tokenized = tokenizer.tokenize(tmp_filepath)
+            tokenized = tokenizer.tokenize_file(tmp_filepath)
             logger.info("...done. writing to: %s" % data_filepath)
             f = open(data_filepath, 'w')
             f.write(tokenized)
