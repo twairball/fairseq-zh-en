@@ -31,7 +31,7 @@ heavily borrowed from tensor2tensor's generator_utils.py
 
 dataset_config: {"url": "http://my.dataset.url", "source": "data.en", "target": "data.zh"}
 """
-def prepare_dataset(data_dir, tmp_dir, dataset_config, tokenize=True):
+def prepare_dataset(data_dir, tmp_dir, dataset_config, tokenize=True, merge_blanks=True):
     """ download, unzip and copy files to data_dir if necessary """
     
     if not os.path.exists(data_dir):
@@ -84,6 +84,96 @@ def prepare_dataset(data_dir, tmp_dir, dataset_config, tokenize=True):
         else:
             logger.info("tokenize=False, copying to %s" % data_filepath)
             os.rename(tmp_filepath, data_filepath)
+
+    # merge blanks
+    if merge_blanks:
+        src = os.path.join(data_dir, dataset_config["data_source"])
+        targ = os.path.join(data_dir, dataset_config["data_target"])
+        merge_blanks_and_write(src, targ)
+
+def merge_blanks_and_write(src, targ):
+    src_lines, targ_lines = _merge_blanks(src, targ, verbose=True)
+
+    with open(src, 'w') as f:
+        for l in src_lines:            
+            f.write(l + "\n")
+
+    with open(targ, 'w') as f:
+        for l in targ_lines:
+            f.write(l + "\n")
+    
+def _merge_blanks(src, targ, verbose=False):
+    """Read parallel corpus 2 lines at a time. 
+    Merge both sentences if only either source or target has blank 2nd line. 
+    If both have blank 2nd lines, then ignore. 
+    
+    Returns tuple (src_lines, targ_lines), arrays of strings sentences. 
+    """
+    merges_done = [] # array of indices of rows merged
+    sub = None # replace sentence after merge
+    with open(src, 'rb') as src_file, open(targ, 'rb') as targ_file: 
+        src_lines = src_file.readlines()
+        targ_lines = targ_file.readlines()
+        
+        print("src: %d, targ: %d" % (len(src_lines), len(targ_lines)))
+        print("=" * 30)
+        for i in range(0, len(src_lines) - 1):
+            s = src_lines[i].decode().rstrip()
+            s_next = src_lines[i+1].decode().rstrip()
+            
+            t = targ_lines[i].decode().rstrip()
+            t_next = targ_lines[i+1].decode().rstrip()
+            
+            
+            if t == '.':
+                t = '' 
+            if t_next == '.':
+                t_next = ''
+                
+            if (len(s_next) == 0) and (len(t_next) > 0):
+                targ_lines[i] = "%s %s" % (t, t_next) # assume it has punctuation
+                targ_lines[i+1] = b''
+                src_lines[i] = s if len(s) > 0 else sub
+                
+                merges_done.append(i)
+                if verbose: 
+                    print("t [%d] src: %s\n      targ: %s" % (i, src_lines[i], targ_lines[i]))
+                    print()
+                
+            elif (len(s_next) > 0) and (len(t_next) == 0):
+                src_lines[i] = "%s %s" % (s, s_next) # assume it has punctuation
+                src_lines[i+1] = b''
+                targ_lines[i] = t if len(t) > 0 else sub
+                
+                merges_done.append(i)
+                if verbose:
+                    print("s [%d] src: %s\n      targ: %s" % (i, src_lines[i], targ_lines[i]))
+                    print()
+            elif (len(s) == 0) and (len(t) == 0):
+                # both blank -- remove
+                merges_done.append(i)
+            else:
+                src_lines[i] = s if len(s) > 0 else sub
+                targ_lines[i] = t if len(t) > 0 else sub
+                
+        # handle last line
+        s_last = src_lines[-1].decode().strip()
+        t_last = targ_lines[-1].decode().strip()
+        if (len(s_last) == 0) and (len(t_last) == 0):
+            merges_done.append(len(src_lines) - 1)
+        else:
+            src_lines[-1] = s_last
+            targ_lines[-1] = t_last
+            
+    # remove empty sentences
+    for m in reversed(merges_done):
+        del src_lines[m]
+        del targ_lines[m]
+    
+    print("merges done: %d" % len(merges_done))
+    return (src_lines, targ_lines)
+                
+                
 
 def download_report_hook(count, block_size, total_size):
     """Report hook for download progress.

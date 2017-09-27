@@ -56,7 +56,7 @@ def tokenize_file(filepath, lower_case=True, delim=' '):
             _tokenizer_name = "jieba" if is_zh else "nltk.word_tokenize" 
             logger.info("     [%d] %s: %s" % (i, _tokenizer_name, line))
         
-        # tokenize
+        # tokenize  
         _tokenized = tokenize(line, is_sgm, is_zh, lower_case, delim)
         # if len(_tokenized) < 2:
         #     logger.info("     [%d] (blank): @@%s >> %s@@" % (i, _tokenized, line))
