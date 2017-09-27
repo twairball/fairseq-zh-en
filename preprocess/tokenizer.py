@@ -49,16 +49,17 @@ def tokenize_file(filepath, lower_case=True, delim=' '):
     is_zh = filename.endswith(".zh") or filename.endswith(".zh.sgm")
 
     tokenized = ''
-    f = open(filepath, 'r')
+    f = open(filepath, 'rb')
     for i, line in enumerate(f):
+        line = line.decode('utf-8') # decode
         if i % 2000 == 0:
             _tokenizer_name = "jieba" if is_zh else "nltk.word_tokenize" 
             logger.info("     [%d] %s: %s" % (i, _tokenizer_name, line))
         
         # tokenize
         _tokenized = tokenize(line, is_sgm, is_zh, lower_case, delim)
-        if len(_tokenized) < 2:
-            logger.info("     [%d] (blank): @@%s >> %s@@" % (i, _tokenized, line))
+        # if len(_tokenized) < 2:
+        #     logger.info("     [%d] (blank): @@%s >> %s@@" % (i, _tokenized, line))
 
         # append
         tokenized += "%s\n" % _tokenized
