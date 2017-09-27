@@ -51,7 +51,26 @@ $ sudo ln -s  /usr/local/cuda-8.0/extras/CUPTI/lib64/* $LD_LIBRARY_PATH/
 ````
 
 
-# Preprocess
+# Preprocessing
+
+#### Word Token
+We tokenize dataset, using `nltk.word_tokenizer` for English and `jieba` for Chinese word segmentation. 
+
+#### Casing
+We remove cases from English and converted all string to lower case. 
+
+#### Merge blank lines
+We note that dataset often has blank lines. In some cases, this is formatting, but there are cases where a long English sentence is translated to 2 Chinese sentences. This appears as a sentence followed by blank line on English corpus. To deal with this, we merge the 2 Chinese sentences onto same line, and then remove the blank line from both corpus. 
+
+There are also formatting issues, where English corpus has blank line while Chinese corpus has a single `.`. We treat this as both blank lines and remove them. 
+
+#### Additional data cleaning
+
+We note that there are further work that can be added to data cleaning:
+* remove non-English/Chinese sentences. I think there was a Russian sentence. 
+* remove (HTML?) markup
+* remove non-breaking white space. `\xa20` was found and converted to whitespace.
+
 
 ````
 # download, unzip, tokenize datasets
