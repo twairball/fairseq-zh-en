@@ -67,6 +67,8 @@ $ fairseq preprocess -sourcelang en -targetlang zh \
 
 # Training
 
+run `wmt17_train.sh` which includes the following: 
+
 ````
 $ DATADIR=data-bin/wmt17_en_zh
 $ TRAIN=trainings/wmt17_en_zh
@@ -92,7 +94,7 @@ $ fairseq train -sourcelang en -targetlang zh -datadir $DATADIR \
 # Generate
 
 ````
-$ DATADIR=data-bin/nc-v12.en.zh
+$ DATADIR=data-bin/wmt17_en_zh
 
 # Optional: optimize for generation speed (fconv only)
 $ fairseq optimize-fconv -input_model trainings/fconv/model_best.th7 -output_model trainings/fconv/model_best_opt.th7

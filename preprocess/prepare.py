@@ -87,6 +87,7 @@ def prepare_dataset(data_dir, tmp_dir, dataset_config, tokenize=True, merge_blan
 
     # merge blanks
     if merge_blanks:
+        logger.info("\n%s\n%s" % ("=" * 30, "merging blanks..."))
         src = os.path.join(data_dir, dataset_config["data_source"])
         targ = os.path.join(data_dir, dataset_config["data_target"])
         merge_blanks_and_write(src, targ)
@@ -94,10 +95,12 @@ def prepare_dataset(data_dir, tmp_dir, dataset_config, tokenize=True, merge_blan
 def merge_blanks_and_write(src, targ):
     src_lines, targ_lines = _merge_blanks(src, targ, verbose=True)
 
+    logger.info("writing to: %s" % src)
     with open(src, 'w') as f:
         for l in src_lines:            
             f.write(l + "\n")
 
+    logger.info("writing to: %s" % targ)
     with open(targ, 'w') as f:
         for l in targ_lines:
             f.write(l + "\n")
