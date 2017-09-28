@@ -86,7 +86,7 @@ $ fairseq preprocess -sourcelang en -targetlang zh \
 
 # Training
 
-run `wmt17_train.sh` which includes the following: 
+Run `wmt17_train.sh` which does the following: 
 
 ````
 $ DATADIR=data-bin/wmt17_en_zh
@@ -111,6 +111,8 @@ $ fairseq train -sourcelang en -targetlang zh -datadir $DATADIR \
 ````
 
 # Generate
+
+Run `wmt17_generate.sh`, or run `generate-line` as follows:
 
 ````
 $ DATADIR=data-bin/wmt17_en_zh
