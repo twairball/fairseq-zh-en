@@ -40,6 +40,16 @@ $ unzip ~/nltk_data/tokenizers/punkt.zip ~/nltk_data/tokenizers/
 
 ````
 
+Additionally, we use scripts from Moses and Subword-nmt
+
+````
+git clone https://github.com/moses-smt/mosesdecoder
+````
+
+````
+git clone https://github.com/rsennrich/subword-nmt
+````
+
 ## Additional Setup
 
 CUDA might need to link libraries to path. 
@@ -72,17 +82,15 @@ We note that there are further work that can be added to data cleaning:
 * remove non-breaking white space. `\xa20` was found and converted to whitespace.
 
 
-````
-# download, unzip, tokenize datasets
-# We use dataset_config dictionary -- see wmt.py for more. 
-$ python preprocess/wmt.py
+# Preprocessing
 
-$ TEXT=data/wmt17_en_zh
-$ DATADIR=data-bin/wmt17_en_zh
-$ fairseq preprocess -sourcelang en -targetlang zh \
-    -trainpref $TEXT/train -validpref $TEXT/valid -testpref $TEXT/test \
-    -thresholdsrc 3 -thresholdtgt 3 -destdir $DATADIR
-````
+Preprocessing is run by `wmt_prepare.sh`.
+
+1. We download, unzip, tokenize, and clean dataset in `preprocess/wmt.py`. 
+
+2. We learn subword vocabulary using [apply_bpe](https://github.com/rsennrich/subword-nmt).
+
+3. Then preprocess datasets to binary using `fairseq preprocess`
 
 # Training
 

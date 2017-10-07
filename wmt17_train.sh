@@ -4,11 +4,6 @@ TEXT=data/wmt17_en_zh
 DATADIR=data-bin/wmt17_en_zh
 TRAIN=trainings/wmt17_en_zh
 
-fairseq preprocess -sourcelang en -targetlang zh \
-    -trainpref $TEXT/train -validpref $TEXT/valid -testpref $TEXT/test \
-    -thresholdsrc 3 -thresholdtgt 3 -destdir $DATADIR
-
-
 # Fully convolutional sequence-to-sequence model
 mkdir -p $TRAIN/fconv
 fairseq train -sourcelang en -targetlang zh -datadir $DATADIR \
